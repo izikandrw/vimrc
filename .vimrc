@@ -1,14 +1,16 @@
 call plug#begin('~/.vim/plugged')
 
 " Make sure you use single quotes
-
+" to install plugins run: `PlugInstall`
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-dispatch'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'ruanyl/vim-fixmyjs'
+Plug 'w0rp/ale'
 Plug 'w0rp/aler/local/opt/fzf'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'JamshedVesuna/vim-markdown-preview'
 
 call plug#end()
 
@@ -58,14 +60,38 @@ let g:ale_fix_on_save = 1
 
 "vimgrep configuration
 :set wildignore+=node_modules/**
+" open search results list automatically
+augroup myvimrc
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* cwindow
+    autocmd QuickFixCmdPost l*    lwindow
+augroup END
 
 "fuzzy finder using FZF
-nnoremap <C-T> :Files .<Enter>
+map <C-T> :FZF<CR>
 "dont open FZF file in NERDTree buffer
-nnoremap <silent> <expr> <Leader><Leader> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
+nnoremap <silent> <expr> <C-T><C-T> (expand('%') =~ 'NERD_tree' ? "\<c-w>\<c-w>" : '').":FZF\<cr>"
 
 "folding
 set foldmethod=syntax
 set foldcolumn=1
 let javaScript_fold=1
 " set foldlevelstart=1
+
+" yank to clipboard
+if has("clipboard")
+  set clipboard=unnamed " copy to the system clipboard
+endif
+
+" highlight current line
+augroup BgHighlight
+  autocmd!
+  autocmd WinEnter * set cul
+  autocmd WinLeave * set nocul
+augroup END
+
+" augroup BgHighlight
+"   autocmd!
+"   autocmd VimEnter,WinEnter,BufWinEnter * highlight CursorLine ctermfg=White ctermbg=Yellow cterm=bold guifg=white guibg=yellow gui=bold
+"   autocmd WinLeave * setlocal nocursorline
+" augroup END
